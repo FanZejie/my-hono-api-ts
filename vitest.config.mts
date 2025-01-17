@@ -1,11 +1,12 @@
-import { defineWorkersConfig } from '@cloudflare/vitest-pool-workers/config';
+import { defineConfig } from 'vitest/config'
 
-export default defineWorkersConfig({
+export default defineConfig({
 	test: {
-		poolOptions: {
-			workers: {
-				wrangler: { configPath: './wrangler.json' },
-			},
-		},
+		// poolOptions: {
+		// 	workers: {
+		// 		wrangler: { configPath: './wrangler.json' },
+		// 	},
+		// },
+		environment: 'node', // 指定测试环境为 Node.js
 	},
 });

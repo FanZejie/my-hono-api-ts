@@ -1,25 +1,17 @@
-// test/index.spec.ts
-import { env, createExecutionContext, waitOnExecutionContext, SELF } from 'cloudflare:test';
-import { describe, it, expect } from 'vitest';
-import worker from '../src/index';
+import { Hono } from 'hono'
+import { describe, it, expect } from 'vitest'
 
-// For now, you'll need to do something like this to get a correctly-typed
-// `Request` to pass to `worker.fetch()`.
-const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
+const app = new Hono()
 
-describe('Hello World worker', () => {
-	it('responds with Hello World! (unit style)', async () => {
-		const request = new IncomingRequest('http://example.com');
-		// Create an empty context to pass to `worker.fetch()`.
-		const ctx = createExecutionContext();
-		const response = await worker.fetch(request, env, ctx);
-		// Wait for all `Promise`s passed to `ctx.waitUntil()` to settle before running test assertions
-		await waitOnExecutionContext(ctx);
-		expect(await response.text()).toMatchInlineSnapshot(`"Hello World!"`);
-	});
+// 定义路由
+app.get('/', (c) => c.text('Please test me!'))
 
-	it('responds with Hello World! (integration style)', async () => {
-		const response = await SELF.fetch('https://example.com');
-		expect(await response.text()).toMatchInlineSnapshot(`"Hello World!"`);
-	});
-});
+// 测试逻辑
+describe('Test the application', () => {
+  it('Should return 200 response', async () => {
+    const res = await app.request('http://localhost/') // 模拟请求
+    expect(res.status).toBe(200) // 验证响应状态码
+    const text = await res.text()
+    expect(text).toBe('Please test me!') // 验证响应内容
+  })
+})
